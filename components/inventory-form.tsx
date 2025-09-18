@@ -205,6 +205,11 @@ export function InventoryForm({ onProductAdded }: InventoryFormProps) {
                   <SelectItem value="Ceramic">Ceramic</SelectItem>
                   <SelectItem value="Composite">Composite</SelectItem>
                   <SelectItem value="Vinyl">Vinyl</SelectItem>
+                  <SelectItem value="Brick">Brick</SelectItem>
+                  <SelectItem value="Stone">Stone</SelectItem>
+                  <SelectItem value="Glass">Glass</SelectItem>
+                  <SelectItem value="Drywall">Drywall</SelectItem>
+                  <SelectItem value="Insulation">Insulation</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>

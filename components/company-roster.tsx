@@ -1,14 +1,13 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Users, Building } from "lucide-react"
+import UserRating from "@/components/user-rating"
 
 interface Employee {
   id: string
@@ -42,6 +41,7 @@ export default function CompanyRoster() {
 
   useEffect(() => {
     fetchEmployees()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchEmployees = async () => {
@@ -62,18 +62,17 @@ export default function CompanyRoster() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     try {
       if (editingEmployee) {
-        const { error } = await supabase.from("company_roster").update(formData).eq("id", editingEmployee.id)
-
+        const { error } = await supabase
+          .from("company_roster")
+          .update(formData)
+          .eq("id", editingEmployee.id)
         if (error) throw error
       } else {
         const { error } = await supabase.from("company_roster").insert([formData])
-
         if (error) throw error
       }
-
       await fetchEmployees()
       resetForm()
     } catch (error) {
@@ -86,7 +85,6 @@ export default function CompanyRoster() {
 
     try {
       const { error } = await supabase.from("company_roster").delete().eq("id", id)
-
       if (error) throw error
       await fetchEmployees()
     } catch (error) {
@@ -213,7 +211,9 @@ export default function CompanyRoster() {
               />
               <select
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as "active" | "inactive" })}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value as "active" | "inactive" })
+                }
                 className="bg-white/10 border border-white/20 rounded-md px-3 py-2 text-white"
               >
                 <option value="active">Active</option>
@@ -245,7 +245,9 @@ export default function CompanyRoster() {
                 <Badge
                   variant={employee.status === "active" ? "default" : "secondary"}
                   className={
-                    employee.status === "active" ? "bg-green-500/20 text-green-300" : "bg-gray-500/20 text-gray-300"
+                    employee.status === "active"
+                      ? "bg-green-500/20 text-green-300"
+                      : "bg-gray-500/20 text-gray-300"
                   }
                 >
                   {employee.status}
@@ -260,15 +262,30 @@ export default function CompanyRoster() {
                 <p>📧 {employee.employee_email}</p>
                 {employee.department && <p>🏢 {employee.department}</p>}
                 {employee.phone && <p>📞 {employee.phone}</p>}
-                {employee.hire_date && <p>📅 Hired: {new Date(employee.hire_date).toLocaleDateString()}</p>}
+                {employee.hire_date && (
+                  <p>📅 Hired: {new Date(employee.hire_date).toLocaleDateString()}</p>
+                )}
               </div>
 
-              <div className="flex space-x-2">
-                <Button size="sm" variant="outline" onClick={() => startEdit(employee)} className="flex-1">
+              <UserRating
+                onRate={(rating) => console.log(`Employee ${employee.id} rated: ${rating}`)}
+              />
+
+              <div className="flex space-x-2 mt-4">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => startEdit(employee)}
+                  className="flex-1"
+                >
                   <Edit className="w-3 h-3 mr-1" />
                   Edit
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(employee.id)}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDelete(employee.id)}
+                >
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>
@@ -281,7 +298,9 @@ export default function CompanyRoster() {
         <div className="text-center py-12">
           <Users className="w-16 h-16 text-white/40 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-white mb-2">No employees added yet</h3>
-          <p className="text-white/60 mb-4">Start building your company roster by adding your first employee.</p>
+          <p className="text-white/60 mb-4">
+            Start building your company roster by adding your first employee.
+          </p>
           <Button
             onClick={() => setShowForm(true)}
             className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
